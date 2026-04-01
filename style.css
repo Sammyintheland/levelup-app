@@ -1,0 +1,42 @@
+/* BACKGROUND COLOR FOR THE WEBSITE*/
+body {
+  background: linear-gradient(-45deg, #14b8a6, #0f766e, #0ea5e9, #87a5f5,#ff41c0fd);
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* DARK MODE */
+html.dark body {
+    background: #000000;
+    color: #ffffff;
+}
+/* OVERDUE GLOW FOR THE CHECKLIST*/
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0px rgba(239, 68, 68, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.8);
+  }
+}
+
+.overdue-task {
+  animation: pulseGlow 2s infinite;
+}
+
+
+@keyframes pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    80% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.hidden {
+    display: none;
+}

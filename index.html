@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LevelUp App </title>    
+  <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="style.css">
+   <script src="leveljs-folder/script.js" defer></script>
+<script src="leveljs-folder/transition.js" defer></script>
+<script src="leveljs-folder/budget.js" defer></script>
+<script src="leveljs-folder/wellness.js" defer></script>
+<script src="leveljs-folder/planner.js" defer></script>
+<script src="leveljs-folder/profile.js" defer></script>
+
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+
+<!-- ================= NAVIGATION ================= -->
+<nav class="bg-white dark:bg-gray-800 shadow-md px-8 py-4 flex justify-between items-center transition-colors">
+    <div class="flex items-center space-x-6">
+        <img src="levelup_logo.png.png" alt="Level Up Logo" width="50">
+      <a href="#" onclick="requireLogin(() => goHome())" class="hover:text-teal-600 dark:text-gray-200 cursor-pointer">Dashboard</a>
+<a href="#" onclick="requireLogin(() => openModule('Smart Planner'))" class="hover:text-teal-600 dark:text-gray-200 cursor-pointer">Planner</a>
+<a href="#" onclick="requireLogin(() => openModule('Wellness Hub'))" class="hover:text-teal-600 dark:text-gray-200 cursor-pointer">Wellness</a>
+<a href="#" onclick="requireLogin(() => openModule('Budget Tracker'))" class="hover:text-teal-600 dark:text-gray-200 cursor-pointer">Budget</a>
+<a href="#" onclick="requireLogin(() => openModule('Career Explorer'))" class="hover:text-teal-600 dark:text-gray-200 cursor-pointer">Career</a>
+<a href="#" onclick="requireLogin(() => openModule('Transition Helper'))" class="hover:text-teal-600 dark:text-gray-200 cursor-pointer">Transition</a>
+<a href="#" onclick="requireLogin(() => openModule('Profile'))" class="hover:text-teal-600 dark:text-gray-200 cursor-pointer">Profile</a>
+    </div>
+<div class="flex items-center space-x-4">
+<button id="dark-mode-btn" onclick="toggleDarkMode()" 
+        class="px-3 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 dark:text-white transition perspective-500">
+  <span id="dark-mode-flip" class="inline-block transition-transform duration-500 transform">
+    🌙
+  </span>
+</button>
+        <div id="auth-area" class="flex items-center space-x-3">
+            <div id="guest-buttons" class="flex items-center space-x-3">
+                <button onclick="openLogin()" 
+                    class="px-4 py-2 rounded-lg text-teal-600 font-semibold hover:bg-teal-50 dark:text-white transition">Login</button>
+                <button onclick="openSignup()" 
+                    class="px-4 py-2 rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition">Sign Up</button>
+            </div>
+            <div id="user-menu" class="hidden items-center space-x-3">
+                <span id="nav-username" class="font-semibold text-teal-600 dark:text-teal-400"></span>
+                <button onclick="openlogout()" 
+                    class="px-3 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition">Logout</button>
+            </div>
+        </div>
+    </div>
+    <div id="googlenewbutton" class="flex items-center space-x-3">
+    <!-- Google config -->
+    <div id="g_id_onload"
+        data-client_id="224249589670-s9a65744f31r2g0669ko3899e28bo3bp.apps.googleusercontent.com"
+        data-callback="handleGoogleLogin"
+        data-auto_prompt="false">
+    </div>
+
+    <!-- Google official button -->
+    <div id="google-signin-btn"
+        class="g_id_signin"
+        data-type="standard"
+        data-size="large"
+        data-theme="outline"
+        data-text="sign_in_with"
+        data-shape="rectangular"
+        data-logo_alignment="left">
+    </div>
+
+</div>
+</nav>
+
+<!-- ================= DASHBOARD ================= -->
+
+<div id="dashboard" class="p-10 text-gray-800 dark:text-gray-100 transition-colors">
+
+    <h2 id="welcome-message" class="text-3xl font-bold mb-2">Welcome back! 👋</h2>
+    <p class="text-black-600 dark:text-gray-300 mb-8">Ready to level up your day?</p>
+<!-- Stats -->
+<div class="grid grid-cols-4 gap-6 mb-10">
+
+  <!-- LEVEL -->
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+    <h3 class="text-gray-500 dark:text-white">Level</h3>
+    <p class="text-2xl font-bold text-purple-500">
+      Lv <span id="user-level">1</span>
+    </p>
+  </div>
+
+  <!-- XP + PROGRESS -->
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow col-span-2">
+    <h3 class="text-gray-500 dark:text-white">XP</h3>
+
+    <p class="text-2xl font-bold text-yellow-500 mb-2">
+      <span id="user-xp">0</span> XP
+    </p>
+
+    <!-- XP BAR -->
+    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+      <div id="xp-bar"
+           class="h-3 rounded-full bg-teal-500 transition-all duration-500"
+           style="width: 0%">
+      </div>
+    </div>
+
+    <!-- XP TO NEXT LEVEL -->
+    <p class="text-xs mt-2 text-gray-500 dark:text-gray-300">
+      <span id="xp-next">100</span> XP to next level
+    </p>
+  </div>
+
+</div>
+
+<!-- Achievements -->
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-10">
+  <h3 class="text-lg font-bold mb-4 dark:text-white">🏆 Achievements</h3>
+
+  <div id="badges-container" class="flex flex-wrap gap-4">
+    
+  </div>
+</div>
+
+    <!-- Modules -->
+    <div class="grid grid-cols-2 gap-6">
+<!-- GATED -->
+<div onclick="requireLogin(() => openModule('Profile'))" 
+    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow cursor-pointer hover:shadow-lg transition">
+    <h3 class="text-xl font-bold mb-2">LevelUp Profile 🚀</h3>
+    <p class="text-gray-600 dark:text-gray-300 mb-4">
+        Personalize your experience and get smart recommendations.
+    </p>
+</div>
+
+<div onclick="requireLogin(() => openModule('Smart Planner'))" 
+    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow cursor-pointer hover:shadow-lg transition">
+    <h3 class="text-xl font-bold mb-2">Smart Planner</h3>
+    <p class="text-gray-600 dark:text-gray-300 mb-4">
+        Track assignments, break tasks into daily steps, and never miss a deadline.
+    </p>
+</div>
+
+<div onclick="requireLogin(() => openModule('Wellness Hub'))" 
+    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow cursor-pointer hover:shadow-lg transition">
+    <h3 class="text-xl font-bold mb-2">Wellness Hub</h3>
+    <p class="text-gray-600 dark:text-gray-300 mb-4">
+        Mood tracking, stress management, and personalized coping strategies.
+    </p>
+</div>
+
+<div onclick="requireLogin(() => openModule('Budget Tracker'))" 
+    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow cursor-pointer hover:shadow-lg transition">
+    <h3 class="text-xl font-bold mb-2">Budget Tracker</h3>
+    <p class="text-gray-600 dark:text-gray-300 mb-4">
+        Monitor spending, set savings goals, and get alerts when overspending.
+    </p>
+</div>
+
+<div onclick="requireLogin(() => openModule('Career Explorer'))" 
+    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow cursor-pointer hover:shadow-lg transition">
+    <h3 class="text-xl font-bold mb-2">Career Explorer</h3>
+    <p class="text-gray-600 dark:text-gray-300 mb-4">
+        Discover careers based on your interests and skills assessment.
+    </p>
+</div>
+
+<div onclick="requireLogin(() => openModule('Transition Helper'))" 
+    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow col-span-2 cursor-pointer hover:shadow-lg transition">
+    <h3 class="text-xl font-bold mb-2">Transition Helper</h3>
+    <p class="text-gray-600 dark:text-gray-300 mb-4">
+        Step-by-step checklists for moving between school levels.
+    </p>
+</div>
+
+
+        <!-- Daily Streak -->
+<div class="mb-6 bg-orange-100 dark:bg-orange-900 p-6 rounded-xl">
+    <h3 class="font-bold mb-2">🔥 Daily Streak</h3>
+    <p class="text-lg">
+        <span id="streak-count">0</span> days
+    </p>
+</div>
+</div>
+ 
+
+
+    <!-- Daily Tip -->
+    <div class="mt-10 bg-yellow-100 dark:bg-yellow-900 p-6 rounded-xl">
+        <h3 class="font-bold mb-2">Daily Tip</h3>
+        <p id="daily-tip" class="transition-opacity duration-500 opacity-100">Loading tip......</p>
+        <p class="text-sm mt-3 text-gray-600 dark:text-gray-300">Next tip in: <span id="tip-timer">1:00</span></p>
+    </div>
+
+</div>
+
+<!-- ================= MODULE SECTIONS ================= -->
+<!--PROFILE HTML-->
+<div id="profile-section" class="hidden p-10">
+
+<h2 class="text-3xl font-bold mb-6 dark:text-white">
+LevelUp Profile 🚀
+</h2>
+
+<button onclick="goHome()"
+class="mb-8 bg-gray-300 dark:bg-gray-700 dark:text-white px-4 py-2 rounded-lg">
+← Back
+</button>
+
+<div class="max-w-2xl mx-auto text-center space-y-6">
+
+<p class="text-lg dark:text-white opacity-80">
+Set up your profile to get personalized recommendations.
+</p>
+
+<button onclick="openProfileSetup()"
+class="bg-teal-600 text-white px-6 py-3 rounded-xl hover:bg-teal-700 transition text-lg">
+Start Setup 🚀
+</button>
+
+</div>
+</div>
+
+
+<!-- SMART PLANNER HTML -->
+<div id="planner-section" class="hidden p-10 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+
+    <h2 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">Smart Planner</h2>
+
+    <button onclick="goHome()" class="mb-6 bg-red-300 dark:bg-red-700 text-gray-900 dark:text-white px-4 py-2 rounded hover:bg-red-400 dark:hover:bg-red-600">
+        ← Back
+    </button>
+
+    <p class="mb-6 text-gray-700 dark:text-gray-300">
+        This is where assignments will go.
+    </p>
+
+    <!-- Add New Task Form -->
+    <div class="mb-6 bg-white dark:bg-gray-800 p-6 rounded shadow text-gray-900 dark:text-white">
+        <h3 class="font-bold mb-2 text-gray-900 dark:text-white">Add a New Task</h3>
+
+        <input type="text" id="task-name" placeholder="Task Name" 
+            class="border p-2 rounded w-full mb-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white">
+
+        <input type="date" id="task-date" 
+            class="border p-2 rounded w-full mb-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white">
+
+        <select id="task-priority" 
+            class="border p-2 rounded w-full mb-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white">
+            <option value="High">High Priority</option>
+            <option value="Medium">Medium Priority</option>
+            <option value="Low">Low Priority</option>
+        </select>
+
+        <button onclick="addTask()" 
+            class="bg-teal-600 dark:bg-teal-500 hover:bg-teal-700 dark:hover:bg-teal-600 text-white px-4 py-2 rounded">
+            Add Task
+        </button>
+    </div>
+
+    <!-- Task List -->
+    <div id="task-list" class="space-y-2">
+        <h3 class="font-bold mb-2 text-gray-900 dark:text-white">Your Tasks</h3>
+        <ul id="tasks-container"></ul>
+    </div>
+
+</div>
+
+<!-- CAREER EXPLORER SECTION -->
+<div id="career-section" class="hidden p-10">
+    <h2 class="text-3xl font-bold mb-6 dark:text-white">
+        Career Explorer
+    </h2>
+
+    <button onclick="goHome()" 
+        class="mb-8 bg-gray-300 dark:bg-gray-700 dark:text-white px-4 py-2 rounded-lg">
+        ← Back
+    </button>
+
+    <div class="max-w-3xl mx-auto space-y-8">
+
+        <!-- Interest Quiz -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+            <h3 class="text-xl font-semibold mb-4 dark:text-white">
+                Interest Quiz
+            </h3>
+
+            <label class="block mb-2 dark:text-white">
+                What do you enjoy most?
+            </label>
+            <select id="interest-select"
+                class="w-full p-2 rounded-lg border dark:bg-gray-700 dark:text-white">
+                <option value="">Select One</option>
+                <option value="tech">Technology & Coding</option>
+                <option value="creative">Creative Arts</option>
+                <option value="business">Business & Leadership</option>
+                <option value="helping">Helping People</option>
+                <option value="medical">Medical & Healthcare</option>
+            </select>
+        </div>
+
+        <!-- Skills Assessment -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+            <h3 class="text-xl font-semibold mb-4 dark:text-white">
+                Skills Assessment
+            </h3>
+
+            <div class="grid grid-cols-2 gap-3 dark:text-white">
+                <label><input type="checkbox" value="coding"> Coding</label>
+                <label><input type="checkbox" value="writing"> Writing</label>
+                <label><input type="checkbox" value="math"> Math</label>
+                <label><input type="checkbox" value="design"> Design</label>
+                <label><input type="checkbox" value="leadership"> Leadership</label>
+                <label><input type="checkbox" value="communication"> Communication</label>
+            </div>
+
+            <button onclick="generateCareers()"
+                class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                Find Careers
+            </button>
+        </div>
+        <!-- Career Results -->
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold dark:text-white">
+            Career Matches
+        </h3>
+
+        <button onclick="document.getElementById('career-results').innerHTML='<p class=\'opacity-70\'>Results cleared.</p>'"
+            class="text-sm bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition">
+            Clear
+        </button>
+    </div>
+
+    <div id="career-results" class="space-y-4 dark:text-white">
+        <p class="opacity-70">Complete the quiz to see matches.</p>
+    </div>
+</div>
+
+
+
+    </div>
+    <!-- SAVED CAREERS SECTION -->
+<div id="saved-careers-section" class="hidden p-10">
+    <h2 class="text-3xl font-bold mb-6 dark:text-white">
+        My Saved Careers
+    </h2>
+
+    <button onclick="goHome()" 
+        class="mb-8 bg-gray-300 dark:bg-gray-700 dark:text-white px-4 py-2 rounded-lg">
+        ← Back
+    </button>
+
+    <div id="saved-careers-container"
+         class="space-y-4 max-w-3xl mx-auto">
+    </div>
+</div>
+</div>
+
+<!-- WELLNESS HUB SECTION -->
+<div id="wellness-section" class="hidden p-10">
+    <h2 class="text-3xl font-bold mb-6 dark:text-white">Wellness Hub</h2>
+
+    <button onclick="goHome()" 
+        class="mb-8 bg-gray-300 dark:bg-gray-700 dark:text-white px-4 py-2 rounded-lg">
+        ← Back
+    </button>
+
+    <!-- Main Container (IMPORTANT) -->
+    <div class="max-w-2xl mx-auto space-y-8">
+
+        <!-- Mood Tracker -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow text-center">
+            <h3 class="text-xl font-semibold mb-4 dark:text-white">
+                How are you feeling today?
+            </h3>
+
+            <div class="flex justify-center gap-6 text-4xl">
+                <button onclick="logMood(100)" class="hover:scale-125 transition">😁</button>
+                <button onclick="logMood(80)" class="hover:scale-125 transition">🙂</button>
+                <button onclick="logMood(60)" class="hover:scale-125 transition">😐</button>
+                <button onclick="logMood(40)" class="hover:scale-125 transition">😔</button>
+                <button onclick="logMood(20)" class="hover:scale-125 transition">😣</button>
+            </div>
+            <!-- Mood History Preview -->
+<div class="mt-6 text-left">
+    <div class="flex justify-between items-center mb-2">
+        <h4 class="font-semibold dark:text-white">Recent Moods</h4>
+        <button id="clear-moods-btn"
+            onclick="clearMoodHistory()"
+            class="text-xs bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition hidden">
+            Clear
+        </button>
+    </div>
+
+    <div id="recent-moods" class="space-y-2 text-sm dark:text-white opacity-80">
+        <p>No moods logged yet.</p>
+    </div>
+</div>
+   </div>
+
+        <!-- Reflection -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+            <h3 class="text-xl font-semibold mb-4 dark:text-white">
+                Quick Reflection
+            </h3>
+
+            <textarea id="reflection-input"
+                class="w-full p-3 rounded-lg border dark:bg-gray-700 dark:text-white"
+                rows="4"
+                placeholder="Write something about today..."></textarea>
+
+            <button onclick="saveReflection()"
+                class="mt-3 bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition">
+                Save Reflection
+            </button>
+        </div>
+
+        <!-- Breathing -->
+        <div class="text-center">
+            <button onclick="startBreathing()"
+                class="bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition">
+                🧘 Start Breathing Exercise
+            </button>
+        </div>
+
+        <!-- Daily Affirmation -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow text-center">
+            <h3 class="text-xl font-semibold mb-4 dark:text-white">
+                Daily Affirmation
+            </h3>
+
+            <p id="affirmation-text" class="mb-4 dark:text-white opacity-80">
+                Click below for today's affirmation.
+            </p>
+
+            <button onclick="generateAffirmation()"
+                class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition">
+                Get Affirmation
+            </button>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow text-center">
+    <h3 class="text-xl font-semibold mb-4 dark:text-white">
+        Quick Reset Tools
+    </h3>
+
+    <div class="flex justify-center gap-4 flex-wrap">
+        <button onclick="suggestMusic()"
+            class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+            🎵 Calm Music
+        </button>
+
+        <button onclick="drinkWaterReminder()"
+            class="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition">
+            💧 Drink Water
+        </button>
+    </div>
+</div>
+
+        <!-- Reflection History -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+            <h3 class="text-xl font-semibold mb-4 dark:text-white">
+                Reflection History
+            </h3>
+
+            <div id="reflection-history" class="space-y-4">
+                <p class="opacity-70 dark:text-white">No reflections yet.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<!-- BUDGET TRACKER -->
+<div id="budget-section" class="hidden p-10">
+
+<h2 class="text-3xl font-bold mb-6 dark:text-white">
+Budget Tracker
+</h2>
+
+<button onclick="goHome()"
+class="mb-8 bg-gray-300 dark:bg-gray-700 dark:text-white px-4 py-2 rounded-lg">
+← Back
+</button>
+
+<div class="max-w-3xl mx-auto space-y-6">
+
+<!-- ADD INCOME -->
+ 
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+  <h3 class="text-xl font-semibold mb-4 dark:text-white">Add Income</h3>
+
+  <input id="income-input" type="number" placeholder="Enter income amount"
+         class="w-full p-3 rounded-lg border mb-3 dark:bg-gray-700 dark:text-white">
+
+  <input id="income-source" placeholder="Source (optional)"
+         class="w-full p-3 rounded-lg border mb-3 dark:bg-gray-700 dark:text-white">
+
+  <input id="income-date" type="date"
+         class="w-full p-3 rounded-lg border mb-3 dark:bg-gray-700 dark:text-white">
+
+  <button onclick="addIncome()"
+          class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+    Add Income
+  </button>
+
+  <!-- DELETE ALL INCOME -->
+<button onclick="deleteAllIncome()"
+        class="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+  Delete All Income
+</button>
+
+  <p id="income-feedback" class="text-sm text-green-500 mt-2 hidden">Income Added!</p>
+</div>
+
+<div id="income-list" class="mt-4 space-y-2"></div>
+
+
+
+
+
+
+
+<!--ADD EXPENSE-->
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+  <h3 class="text-xl font-semibold mb-4 dark:text-white">Add Expense</h3>
+
+  <input id="expense-name" placeholder="Expense name"
+         class="w-full p-3 rounded-lg border mb-3 dark:bg-gray-700 dark:text-white">
+
+  <input id="expense-amount" type="number" placeholder="Amount"
+         class="w-full p-3 rounded-lg border mb-3 dark:bg-gray-700 dark:text-white">
+
+  <input id="expense-date" type="date"
+         class="w-full p-3 rounded-lg border mb-3 dark:bg-gray-700 dark:text-white">
+
+  <button onclick="addExpense()"
+          class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+          Add Expense
+  </button>
+
+  <p id="expense-feedback" class="text-sm text-green-500 mt-2 hidden">Expense Added!</p>
+</div>
+
+
+<!-- SUMMARY -->
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+
+<h3 class="text-xl font-semibold mb-4 dark:text-white">
+Budget Summary
+</h3>
+
+<p class="dark:text-white">Income: $<span id="total-income">0</span></p>
+<p class="dark:text-white">Expenses: $<span id="total-expenses">0</span></p>
+<p class="dark:text-white font-bold">Balance: $<span id="balance">0</span></p>
+
+</div>
+
+<!-- SAVINGS GOAL -->
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+
+<h3 class="text-xl font-semibold mb-4 dark:text-white">
+Savings Goal
+</h3>
+
+<input id="goal-input"
+type="number"
+placeholder="Enter savings goal"
+class="w-full p-3 rounded-lg border mb-3 dark:bg-gray-700 dark:text-white">
+
+<button onclick="setGoal()"
+class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+Set Goal
+</button>
+
+<p class="mt-3 dark:text-white">
+Progress: <span id="goal-progress">0%</span>
+</p>
+
+<div class="w-full bg-gray-200 rounded-full h-3 mt-2">
+<div id="goal-bar"
+class="bg-green-500 h-3 rounded-full"
+style="width:0%"></div>
+</div>
+
+</div>
+
+<!-- TRANSACTIONS -->
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+
+<h3 class="text-xl font-semibold mb-4 dark:text-white">
+Recent Transactions
+</h3>
+
+<div id="transaction-list" class="space-y-2"></div>
+
+<button onclick="clearTransactions()"
+class="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg">
+Clear History
+</button>
+
+</div>
+
+</div>
+</div>
+
+<!-- TRANSITION HELPER -->
+<div id="transition-section" class="hidden p-10">
+
+<h2 class="text-3xl font-bold mb-6 dark:text-white">
+Transition Helper
+</h2>
+
+<button onclick="goHome()"
+class="mb-8 bg-gray-300 dark:bg-gray-700 dark:text-white px-4 py-2 rounded-lg">
+← Back
+</button>
+
+<div class="max-w-3xl mx-auto space-y-6">
+
+<!-- SELECT TRANSITION -->
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+
+<h3 class="text-xl font-semibold mb-4 dark:text-white">
+Choose Your Transition
+</h3>
+
+<select id="transition-select"
+class="w-full p-3 rounded-lg border dark:bg-gray-700 dark:text-white"
+onchange="loadTransition()">
+
+<option value="">Select transition</option>
+<option value="highschool">Middle School → High School</option>
+<option value="college">High School → College</option>
+<option value="trade">High School → Trade School</option>
+<option value="job">School → First Job</option>
+
+</select>
+
+</div>
+
+<!-- CHECKLIST -->
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+
+<h3 class="text-xl font-semibold mb-4 dark:text-white">
+Your Checklist
+</h3>
+
+<div id="transition-checklist" class="space-y-3"></div>
+
+<div class="mt-4 text-sm opacity-80 dark:text-white">
+ <span id="transition-progress"></span>
+</div>
+
+<div class="w-full bg-gray-200 rounded-full h-3 mt-2">
+<div id="transition-bar"
+class="bg-green-500 h-3 rounded-full"
+style="width:0%"></div>
+</div>
+
+<div class="mt-3 text-sm dark:text-white">
+Readiness Score: <span id="transition-score">0</span>/100
+</div>
+
+<div class="mt-4">
+
+<h3 class="font-semibold dark:text-white mb-2">
+Achievements 🏆
+</h3>
+
+<div id="transition-achievements"
+class="flex gap-3 text-sm">
+
+<span id="badge1" class="opacity-30">🥉 Starter</span>
+<span id="badge2" class="opacity-30">🥈 Halfway</span>
+<span id="badge3" class="opacity-30">🥇 Ready</span>
+
+</div>
+
+</div>
+
+<button onclick="resetChecklist()"
+class="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+Reset Checklist
+</button>
+
+</div>
+
+<!-- TIPS -->
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+
+<h3 class="text-xl font-semibold mb-4 dark:text-white">
+Helpful Tips
+</h3>
+
+<ul id="transition-tips"
+class="list-disc pl-6 space-y-2 dark:text-white opacity-90"></ul>
+
+</div>
+
+<div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mt-6">
+  <h3 class="text-xl font-semibold mb-4 dark:text-white">Transition AI Advisor</h3>
+
+  <input type="text" id="transition-ai-input"
+         class="w-full p-2 rounded-lg border dark:bg-gray-700 dark:text-white mb-2"
+         placeholder="Ask a question about your transition...">
+
+  <div class="flex gap-2 mb-2">
+    <button onclick="askTransitionAI()"
+            class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+      Ask AI
+    </button>
+    <button onclick="clearTransitionAI()"
+            class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition">
+      Clear
+    </button>
+  </div>
+
+  <div id="transition-ai-response" class="hidden mt-4 dark:text-white"></div>
+</div>
+</div>
+  <script>
+(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="RdVI47obz4wSbjFAmBNOM";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+</script>
+
+</body>
+
+</html>
