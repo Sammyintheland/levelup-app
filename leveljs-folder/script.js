@@ -828,11 +828,33 @@ window.requireLogin = function(callback) {
         return true;
     }
 };
+//LOAD PROFILE DASHBOARD
+function loadProfileDashboard(){
+
+    const suggestions = JSON.parse(localStorage.getItem("profileSuggestions")) || [];
+    const insights = JSON.parse(localStorage.getItem("profileInsights")) || [];
+
+    const focusEl = document.getElementById("profile-focus");
+    const insightsEl = document.getElementById("profile-insights");
+    const suggestionsEl = document.getElementById("profile-suggestions");
+
+    if(!focusEl) return;
+
+    // Focus (first suggestion)
+    focusEl.textContent = suggestions[0] || "Complete your profile";
+
+    // Insights
+    insightsEl.innerHTML = insights.map(i => `<li>${i}</li>`).join("");
+
+    // Suggestions
+    suggestionsEl.innerHTML = suggestions.slice(1).map(s => `<li>${s}</li>`).join("");
+}
 
 // ================= INITIALIZATION =================
 document.addEventListener("DOMContentLoaded", function() {
     xp = Number(localStorage.getItem("xp")) || 0;
     streak = Number(localStorage.getItem("streak")) || 0;
+    document.addEventListener("DOMContentLoaded", loadProfileDashboard);
 
     updateGamification();
     applySavedTheme();
