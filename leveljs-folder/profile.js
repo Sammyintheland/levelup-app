@@ -264,37 +264,74 @@ async function openProfileSetup() {
 
 // ================= CORE LOGIC ENGINE =================
 function processProfile(data){
+
     let scores = { productivity: 0, wellness: 0, finance: 0, career: 0 };
     let suggestions = [];
     let insights = [];
 
-    // ===== GOAL IMPACT =====
+    // ===== CORE GOAL =====
     if(data.goal === "time") scores.productivity +=3;
     if(data.goal === "stress") scores.wellness +=3;
     if(data.goal === "money") scores.finance +=3;
     if(data.goal === "career") scores.career +=3;
 
-    // ===== CHALLENGE IMPACT =====
-    if(data.challenge === "procrastination") scores.productivity -=2;
-    if(data.challenge === "stress") scores.wellness -=2;
-    if(data.challenge === "focus") scores.productivity -=1;
-    if(data.challenge === "money") scores.finance -=2;
+    // ===== CHALLENGES =====
+    if(data.challenge === "procrastination"){
+        scores.productivity -=2;
+        suggestions.push("⚡ Try 10-minute starter tasks to beat procrastination");
+    }
 
-    // ===== AGE ADAPTATION =====
-    if(data.age < 14) insights.push("🌱 Early stage — focus on habit building.");
-    else if(data.age <=18) insights.push("📈 Critical growth phase — consistency matters.");
-    else insights.push("🚀 Long-term optimization stage.");
+    if(data.challenge === "stress"){
+        scores.wellness -=2;
+        suggestions.push("🧠 Add daily breathing or reflection sessions");
+    }
 
-    // ===== LEVEL ADAPTATION =====
-    if(data.level === "middle") scores.productivity +=1;
-    if(data.level === "high") scores.career +=1;
-    if(data.level === "college") scores.finance +=1;
-    if(data.level === "adult") scores.finance +=2;
+    if(data.challenge === "focus"){
+        scores.productivity -=1;
+        suggestions.push("📵 Use focus timers and remove distractions");
+    }
 
-    // ===== PRIORITY DETECTION =====
-    let sorted = Object.entries(scores).sort((a,b) => b[1]-a[1]);
-    let topPriority = sorted[0][0];
-    let secondPriority = sorted[1][0];
+    if(data.challenge === "money"){
+        scores.finance -=2;
+        suggestions.push("💸 Track every expense for 3 days to build awareness");
+    }
+
+    // ===== DAILY TIME =====
+    if(data.dailyTime < 15){
+        insights.push("⏱️ You have limited time — focus on micro-tasks.");
+    } else if(data.dailyTime > 60){
+        insights.push("🚀 You have strong availability — aim for bigger goals.");
+    }
+
+    // ===== ENERGY =====
+    if(data.energyLevel === "high"){
+        suggestions.push("⚡ Schedule your hardest tasks first");
+    }
+    if(data.energyLevel === "low"){
+        suggestions.push("🌱 Start with easy wins to build momentum");
+    }
+
+    // ===== STRESS =====
+    if(data.stressLevel >= 7){
+        insights.push("⚠️ High stress detected — prioritize wellness.");
+    }
+
+    // ===== LEARNING STYLE =====
+    if(data.learningStyle === "visual"){
+        suggestions.push("🎥 Use videos and diagrams to learn faster");
+    }
+    if(data.learningStyle === "kinesthetic"){
+        suggestions.push("🛠️ Learn by doing — practice tasks actively");
+    }
+
+    // ===== PATTERN INSIGHT =====
+    if(data.goal === data.challenge){
+        insights.push("🎯 Your goal matches your struggle — focus here first.");
+    }
+
+    // ===== PRIORITY SYSTEM =====
+    let sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+    let top = sorted[0][0];
 
     const moduleMap = {
         productivity: "📚 Smart Planner",
@@ -303,41 +340,23 @@ function processProfile(data){
         career: "🎓 Career Explorer"
     };
 
-    suggestions.push(`🔥 Focus on ${moduleMap[topPriority]}`);
-    suggestions.push(`⚡ Improve ${moduleMap[secondPriority]}`);
+    suggestions.unshift(`🔥 Primary Focus: ${moduleMap[top]}`);
 
-    // ===== PATTERN INSIGHT =====
-    if(data.goal === data.challenge) insights.push("⚠️ Your goal matches your struggle — focus here first.");
-    if(data.challenge === "stress" && data.goal === "time") insights.push("🧠 Time pressure may be causing stress.");
-    if(data.challenge === "money" && data.goal === "stress") insights.push("💸 Financial stress may affect your wellness.");
-
-    // ===== SAVE LOCAL STORAGE =====
+    // ===== SAVE =====
     localStorage.setItem("profileData", JSON.stringify(data));
     localStorage.setItem("profileScores", JSON.stringify(scores));
+    localStorage.setItem("profileSuggestions", JSON.stringify(suggestions));
+    localStorage.setItem("profileInsights", JSON.stringify(insights));
 
-    // ===== FINAL OUTPUT =====
+    // ===== OUTPUT =====
     Swal.fire({
-        title: "🚀 Your Life Analysis",
+        title: "🚀 Your Personalized Plan",
         html: `
-            <b>Top Priorities:</b><br>${suggestions.join("<br>")}<br><br>
-            <b>Insights:</b><br>${insights.join("<br>")}<br><br>
-            <b>Daily Time:</b> ⏰ ${data.dailyTime} minutes/day<br>
-            <b>Learning Style:</b> ${data.learningStyle}<br>
-            <b>Best Time:</b> ${data.bestTime}<br>
-            <b>Energy Level:</b> ${data.energyLevel}<br>
-            <b>Task Duration:</b> ${data.taskDuration} mins<br>
-            <b>Motivation:</b> ${data.motivation}<br>
-            <b>Hobbies:</b> ${data.hobbies}<br>
-            <b>Weekly Availability:</b> ${data.weeklyAvailability}<br>
-            <b>Stress Level:</b> ${data.stressLevel}<br>
-            <b>Preferred Feedback:</b> ${data.preferredFeedback}<br><br>
-            <b>System Scores:</b><br>
-            📚 Productivity: ${scores.productivity}<br>
-            🧠 Wellness: ${scores.wellness}<br>
-            💰 Finance: ${scores.finance}<br>
-            🎓 Career: ${scores.career}
+            <b>🔥 Suggestions:</b><br>${suggestions.join("<br>")}<br><br>
+            <b>🧠 Insights:</b><br>${insights.join("<br>")}
         `,
-        icon: "success",
-        confirmButtonText: "Start Leveling Up 🔥"
+        icon: "success"
     });
+
+    loadProfileDashboard();
 }
