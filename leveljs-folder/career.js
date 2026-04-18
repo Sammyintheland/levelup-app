@@ -23,6 +23,34 @@ const careerMap = {
             salary: "$100,000 - $140,000",
             education: "Bachelor's or Master's Degree",
             skills: ["math", "coding"]
+        },
+        {
+            name: "Game Developer 🎮",
+            desc: "Design and develop video games.",
+            salary: "$80,000 - $115,000",
+            education: "Bachelor's Degree or Portfolio",
+            skills: ["coding", "creativity"]
+        },
+        {
+            name: "Web Developer 🌐",
+            desc: "Create and maintain websites.",
+            salary: "$75,000 - $105,000",
+            education: "Bachelor's Degree or Bootcamp",
+            skills: ["coding", "design"]
+        },
+        {
+            name: "AI / Machine Learning Engineer 🤖",
+            desc: "Build intelligent systems and predictive models.",
+            salary: "$110,000 - $150,000",
+            education: "Bachelor's or Master's Degree",
+            skills: ["coding", "math", "analysis"]
+        },
+        {
+            name: "Network Engineer 🌍",
+            desc: "Manage and maintain computer networks.",
+            salary: "$80,000 - $110,000",
+            education: "IT Degree + Certifications",
+            skills: ["coding", "analysis"]
         }
     ],
 
@@ -40,9 +68,158 @@ const careerMap = {
             salary: "$70,000 - $100,000",
             education: "Nursing Degree",
             skills: ["communication"]
+        },
+        {
+            name: "Pharmacist 💊",
+            desc: "Prepare and dispense medications.",
+            salary: "$110,000 - $140,000",
+            education: "Doctor of Pharmacy",
+            skills: ["math", "analysis"]
+        },
+        {
+            name: "Dentist 🦷",
+            desc: "Diagnose and treat oral health issues.",
+            salary: "$150,000 - $220,000",
+            education: "Dental School",
+            skills: ["communication", "analysis"]
+        },
+        {
+            name: "Physical Therapist 🏃",
+            desc: "Help patients recover movement and strength.",
+            salary: "$80,000 - $110,000",
+            education: "Doctor of Physical Therapy",
+            skills: ["communication"]
+        },
+        {
+            name: "Surgeon 🏨",
+            desc: "Perform operations to treat injuries and diseases.",
+            salary: "$250,000 - $400,000+",
+            education: "Medical School + Residency",
+            skills: ["math", "analysis", "communication"]
+        },
+        {
+            name: "Radiologic Technologist 🩻",
+            desc: "Perform imaging tests like X-rays and MRIs.",
+            salary: "$65,000 - $90,000",
+            education: "Associate or Bachelor's Degree",
+            skills: ["analysis", "communication"]
         }
     ]
-};
+},
+
+creative: [
+    {
+        name: "Graphic Designer 🎨",
+        desc: "Create visual designs for brands and media.",
+        salary: "$50,000 - $80,000",
+        education: "Design Degree or Portfolio",
+        skills: ["creativity", "design"]
+    },
+    {
+        name: "Animator 🎬",
+        desc: "Create animations for movies, games, and media.",
+        salary: "$60,000 - $100,000",
+        education: "Animation Degree or Portfolio",
+        skills: ["creativity"]
+    },
+    {
+        name: "Photographer 📸",
+        desc: "Capture and edit professional photos.",
+        salary: "$40,000 - $75,000",
+        education: "Optional",
+        skills: ["creativity"]
+    },
+    {
+        name: "Musician 🎵",
+        desc: "Create and perform music.",
+        salary: "Varies",
+        education: "Optional",
+        skills: ["creativity"]
+    },
+    {
+        name: "Video Editor 🎥",
+        desc: "Edit video content for media and entertainment.",
+        salary: "$45,000 - $80,000",
+        education: "Optional",
+        skills: ["creativity"]
+    }
+],
+
+business: [
+    {
+        name: "Entrepreneur 🚀",
+        desc: "Start and run your own business.",
+        salary: "Varies",
+        education: "Optional",
+        skills: ["leadership", "creativity"]
+    },
+    {
+        name: "Business Manager 📊",
+        desc: "Oversee operations and teams in a company.",
+        salary: "$70,000 - $120,000",
+        education: "Business Degree",
+        skills: ["leadership", "communication"]
+    },
+    {
+        name: "Marketing Manager 📈",
+        desc: "Promote products and brands.",
+        salary: "$70,000 - $120,000",
+        education: "Marketing Degree",
+        skills: ["creativity", "communication"]
+    },
+    {
+        name: "Financial Analyst 💰",
+        desc: "Analyze financial data and trends.",
+        salary: "$75,000 - $110,000",
+        education: "Finance Degree",
+        skills: ["math", "analysis"]
+    },
+    {
+        name: "Human Resources Manager 👥",
+        desc: "Manage hiring and employee relations.",
+        salary: "$70,000 - $110,000",
+        education: "Business Degree",
+        skills: ["communication", "leadership"]
+    }
+],
+
+helping: [
+    {
+        name: "Teacher 🍎",
+        desc: "Educate students in schools.",
+        salary: "$50,000 - $80,000",
+        education: "Education Degree",
+        skills: ["communication"]
+    },
+    {
+        name: "Social Worker 🤝",
+        desc: "Help people solve and cope with problems.",
+        salary: "$50,000 - $75,000",
+        education: "Social Work Degree",
+        skills: ["communication"]
+    },
+    {
+        name: "Psychologist 🧠",
+        desc: "Study behavior and help with mental health.",
+        salary: "$70,000 - $120,000",
+        education: "Master's or Doctorate",
+        skills: ["analysis", "communication"]
+    },
+    {
+        name: "Firefighter 🚒",
+        desc: "Respond to emergencies and save lives.",
+        salary: "$50,000 - $90,000",
+        education: "Training Academy",
+        skills: ["communication"]
+    },
+    {
+        name: "Police Officer 🚓",
+        desc: "Protect communities and enforce laws.",
+        salary: "$55,000 - $90,000",
+        education: "Police Academy",
+        skills: ["communication"]
+    }
+];
 
 // -------------------------------
 // GENERATE CAREERS WITH SCORING
