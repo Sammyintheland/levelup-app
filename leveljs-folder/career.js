@@ -218,7 +218,8 @@ helping: [
         education: "Police Academy",
         skills: ["communication"]
     }
- };
+  ]
+};
 
 // -------------------------------
 // GENERATE CAREERS WITH SCORING
