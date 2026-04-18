@@ -104,8 +104,7 @@ const careerMap = {
             education: "Associate or Bachelor's Degree",
             skills: ["analysis", "communication"]
         }
-}
-,
+],
 creative: [
     {
         name: "Graphic Designer 🎨",
