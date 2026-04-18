@@ -104,7 +104,6 @@ const careerMap = {
             education: "Associate or Bachelor's Degree",
             skills: ["analysis", "communication"]
         }
-    ]
 },
 
 creative: [
@@ -219,7 +218,7 @@ helping: [
         education: "Police Academy",
         skills: ["communication"]
     }
-];
+ };
 
 // -------------------------------
 // GENERATE CAREERS WITH SCORING
@@ -318,7 +317,7 @@ const scoredCareers = careers.map(career => {
         showConfirmButton: false
     });
 
-    addXP(50,"Found some Careers!")
+    addXP(25,"Found some Careers!")
 };
 
 // -------------------------------
@@ -350,6 +349,8 @@ window.showCareerDetails = function(careerName) {
 window.generateRoadmap = function(careerName) {
 
     const roadmapSteps = {
+
+        // ---------------- TECH ----------------
         "Software Developer 💻": [
             "Learn basic programming (HTML, CSS, JS)",
             "Build small projects",
@@ -357,19 +358,234 @@ window.generateRoadmap = function(careerName) {
             "Build portfolio",
             "Apply for internships"
         ],
+
+        "Cybersecurity Analyst 🔐": [
+            "Learn networking fundamentals",
+            "Study cybersecurity basics",
+            "Get CompTIA Security+ certification",
+            "Practice ethical hacking labs",
+            "Apply for entry-level security jobs"
+        ],
+
+        "Data Scientist 📊": [
+            "Learn Python or R",
+            "Study statistics and data analysis",
+            "Work with datasets",
+            "Build data science projects",
+            "Apply for internships"
+        ],
+
+        "Game Developer 🎮": [
+            "Learn programming (C# or C++)",
+            "Use Unity or Unreal Engine",
+            "Build small games",
+            "Create portfolio",
+            "Apply to studios"
+        ],
+
+        "Web Developer 🌐": [
+            "Learn HTML, CSS, JavaScript",
+            "Build websites",
+            "Learn React or frameworks",
+            "Create portfolio",
+            "Apply for jobs or freelance"
+        ],
+
+        "AI / Machine Learning Engineer 🤖": [
+            "Learn Python",
+            "Study math & statistics",
+            "Learn machine learning basics",
+            "Build AI projects",
+            "Apply for ML roles"
+        ],
+
+        "Network Engineer 🌍": [
+            "Learn networking basics",
+            "Get CCNA certification",
+            "Practice configuring networks",
+            "Gain IT experience",
+            "Apply for jobs"
+        ],
+
+        // ---------------- MEDICAL ----------------
         "Doctor (Physician) 🩺": [
             "Take advanced science classes",
             "Earn Bachelor's degree (Pre-med)",
             "Take MCAT",
             "Attend Medical School",
             "Complete Residency"
+        ],
+
+        "Registered Nurse 🏥": [
+            "Take biology and health classes",
+            "Earn nursing degree",
+            "Pass NCLEX exam",
+            "Gain hospital experience",
+            "Start nursing career"
+        ],
+
+        "Pharmacist 💊": [
+            "Complete pre-pharmacy studies",
+            "Earn Doctor of Pharmacy degree",
+            "Pass licensing exams",
+            "Work in pharmacy",
+            "Specialize if desired"
+        ],
+
+        "Dentist 🦷": [
+            "Earn Bachelor's degree",
+            "Take DAT exam",
+            "Attend dental school",
+            "Pass licensing exams",
+            "Start practice"
+        ],
+
+        "Physical Therapist 🏃": [
+            "Earn Bachelor's degree",
+            "Attend PT school",
+            "Complete clinical training",
+            "Get licensed",
+            "Start practice"
+        ],
+
+        "Surgeon 🏨": [
+            "Earn Bachelor's degree",
+            "Attend Medical School",
+            "Complete residency",
+            "Do surgical fellowship",
+            "Become practicing surgeon"
+        ],
+
+        "Radiologic Technologist 🩻": [
+            "Earn associate degree",
+            "Learn imaging techniques",
+            "Get certification",
+            "Work in hospitals",
+            "Gain experience"
+        ],
+
+        // ---------------- CREATIVE ----------------
+        "Graphic Designer 🎨": [
+            "Learn design basics",
+            "Master Photoshop/Illustrator",
+            "Build portfolio",
+            "Do freelance work",
+            "Apply for jobs"
+        ],
+
+        "Animator 🎬": [
+            "Learn animation tools",
+            "Study motion principles",
+            "Create animations",
+            "Build portfolio",
+            "Apply to studios"
+        ],
+
+        "Photographer 📸": [
+            "Learn camera basics",
+            "Practice photography",
+            "Edit photos",
+            "Build portfolio",
+            "Get clients"
+        ],
+
+        "Musician 🎵": [
+            "Learn instrument or vocals",
+            "Practice regularly",
+            "Record music",
+            "Perform or upload online",
+            "Build audience"
+        ],
+
+        "Video Editor 🎥": [
+            "Learn editing software",
+            "Edit practice videos",
+            "Build portfolio",
+            "Work freelance or apply for jobs"
+        ],
+
+        // ---------------- BUSINESS ----------------
+        "Entrepreneur 🚀": [
+            "Learn business basics",
+            "Develop an idea",
+            "Create a business plan",
+            "Launch product or service",
+            "Scale business"
+        ],
+
+        "Business Manager 📊": [
+            "Earn business degree",
+            "Gain experience",
+            "Develop leadership skills",
+            "Move into management"
+        ],
+
+        "Marketing Manager 📈": [
+            "Learn marketing fundamentals",
+            "Work on campaigns",
+            "Gain experience",
+            "Lead marketing teams"
+        ],
+
+        "Financial Analyst 💰": [
+            "Earn finance degree",
+            "Learn financial modeling",
+            "Get internship",
+            "Apply for analyst jobs"
+        ],
+
+        "Human Resources Manager 👥": [
+            "Earn business or HR degree",
+            "Work in HR roles",
+            "Gain experience",
+            "Become HR manager"
+        ],
+
+        // ---------------- HELPING ----------------
+        "Teacher 🍎": [
+            "Earn education degree",
+            "Complete student teaching",
+            "Get certification",
+            "Start teaching"
+        ],
+
+        "Social Worker 🤝": [
+            "Earn social work degree",
+            "Gain field experience",
+            "Get licensed",
+            "Work in community services"
+        ],
+
+        "Psychologist 🧠": [
+            "Earn Bachelor's degree",
+            "Get Master's or PhD",
+            "Complete training",
+            "Get licensed"
+        ],
+
+        "Firefighter 🚒": [
+            "Complete high school",
+            "Join fire academy",
+            "Pass physical tests",
+            "Start firefighter career"
+        ],
+
+        "Police Officer 🚓": [
+            "Graduate high school",
+            "Attend police academy",
+            "Pass exams",
+            "Start law enforcement career"
         ]
     };
 
     const steps = roadmapSteps[careerName];
 
     if (!steps) {
-        Swal.fire("Roadmap coming soon!");
+        Swal.fire({
+            icon: "info",
+            title: "Roadmap not found",
+            text: "General path: Learn → Practice → Gain experience → Apply for jobs"
+        });
         return;
     }
 
